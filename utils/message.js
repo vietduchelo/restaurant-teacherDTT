@@ -2,9 +2,9 @@
 module.exports = {
   ERROR_MESSAGE: {
     USER: {
-      EXIST: 'USER_EXIST',
-      NOT_FOUND: 'USER_NOT_FOUND',
-      INVALD: 'USER_INVALID',
+      EXIST: 'RESTAURANT_EXIST',
+      NOT_FOUND: 'RESTAURANT_NOT_FOUND',
+      INVALD: 'RESTAURANT_INVALID',
     },
     AUTH: {
       INVALID_TOKEN: 'INVALID_TOKEN',

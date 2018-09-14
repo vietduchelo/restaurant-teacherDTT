@@ -1,43 +1,41 @@
 var message = require('./../utils/message');
-var userService = require('./../service/restaurant.service');
+var restaurantService = require('./../service/restaurant.service');
 
 module.exports = {
    
-    // getAllUser: getAllUser,
-    // getOneUser: getOneUser,
-    createRestaurant: createRestaurant
-//     updateUser: updateUser,
-//     deleteUser: deleteUser,
+    getAllRestaurant: getAllRestaurant,
+    getOneRestaurant: getOneRestaurant,
+    createRestaurant: createRestaurant,
+    updateRestaurant: updateRestaurant,
+    deleteRestaurant: deleteRestaurant,
  }
 
-// function getAllUser(req, res, next) {
+function getAllRestaurant(req, res, next) {
 
-//     userService.getAllUser(function (err, response) {
-//         if (err) {
-//             res.status(err.statusCode).send(err);
-//         } else {
-//             res.send(response);
-//         }
-//     });
-// }
+    restaurantService.getAllRestaurant().then((response)=>{
+        res.send(response);
+    }).catch((err)=> {
+        res.status(err.statusCode).send(err);
+    })
+}
 
-// function getOneUser(req, res, next) {
-//     //Lấy dữ liệu
+function getOneRestaurant(req, res, next) {
+    //Lấy dữ liệu
 
-//     let id = req.params.id;
+    let id = req.params.id;
 
-//     if (!id) {
-//         res.status(400).send({
-//             message: message.ERROR_MESSAGE.USER.INVALID
-//         });
-//     }
+    if (!id) {
+        res.status(400).send({
+            message: message.ERROR_MESSAGE.USER.INVALID
+        });
+    }
 
-//     userService.getOneUser(id).then(function (response) {
-//         res.send(response);
-//     }).catch(function (err) {
-//         res.status(err.statusCode).send(err);
-//     })
-// }
+    restaurantService.getOneRestaurant(id).then(function (response) {
+        res.send(response);
+    }).catch(function (err) {
+        res.status(err.statusCode).send(err);
+    })
+}
 
 function createRestaurant(req, res, next) {
     let params = {
@@ -46,50 +44,35 @@ function createRestaurant(req, res, next) {
         lat: req.body.lat,
         lng: req.body.lng,
     }
-    userService.createRestaurant(params).then((response)=>{
+    restaurantService.createRestaurant(params).then((response)=>{
         res.send(response);
     }).catch((err)=> {
         res.status(err.statusCode).send(err);
     })
 }
 
-// function updateUser(req, res, next) {
-//     let params = {
-//         id: req.params.id,
-//         password: req.body.password,
-//         name: req.body.name,
-//         role: req.body.role,
-//     }
+function updateRestaurant(req, res, next) {
+    let params = {
+        id: req.params.id,
+        name: req.body.name,
+        address: req.body.address,
+        lat: req.body.lat,
+        lng: req.body.lng
+    }
 
-//     userService.updateUser(params).then((response) => {
-//         res.send(response);
-//     }).catch((err) => {
-//         res.status(err.statusCode).send(err);
-//     });
-// }
+    restaurantService.updateRestaurant(params).then((response) => {
+        res.send(response);
+    }).catch((err) => {
+        res.status(err.statusCode).send(err);
+    });
+}
 
-// function deleteUser(req, res, next) {
-//     let id = req.params.id;
+function deleteRestaurant(req, res, next) {
+    let id = req.params.id;
+    restaurantService.deleteRestaurant(id).then((response) => {
+        res.send(response);
+    }).catch((err) => {
+        res.status(err.statusCode).send(err);
+    });
+}
 
-//     userService.deleteUser(id).then((response) => {
-//         res.send(response);
-//     }).catch((err) => {
-//         res.status(err.statusCode).send(err);
-//     });
-// }
-
-
-// function login(req, res, next) {
-//     let userData = {
-//         username: req.body.username,
-//         password: req.body.password
-//     };
-
-//     userService.login(userData, function (err, response) {
-//         if (err) {
-//             res.status(err.statusCode).send(err);
-//         } else {
-//             res.send(response);
-//         }
-//     })
-// }

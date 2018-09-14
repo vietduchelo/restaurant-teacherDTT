@@ -3,77 +3,77 @@ let crypto = require("./../utils/crypto");
 let message = require('./../utils/message');
 
 module.exports = {
-    // getAllUser: getAllUser,
-    // getOneUser: getOneUser,
-    createRestaurant: createRestaurant
-    // updateUser: updateUser,
-    // deleteUser: deleteUser,
+    getAllRestaurant: getAllRestaurant,
+    getOneRestaurant: getOneRestaurant,
+    createRestaurant: createRestaurant,
+    updateRestaurant: updateRestaurant,
+    deleteRestaurant: deleteRestaurant,
 }
 
-// function getAllUser(callback) {
-//     //Xử lý business 
-//     //Vào db lấy hết user ra.
+function getAllRestaurant(callback) {
+  return new Promise(function(res, rej){
+      Restaurant.find({}).exec(function(err, RestaurantData){
+          if(err){
+              rej(err)
+          }
+          else{
+              if(!RestaurantData){
+                  rej({
+                      statusCode: 400,
+                      message: message.ERROR_MESSAGE.USER.NOT_FOUND
+                  })
+              }
+              else{
+                  res(RestaurantData)
+              }
+          }
+      })
+  })
+}
 
-//     User.find({},
-//         {password: 0}
-//     ).exec(function (err, users) {
-//         if (err) {
-//             //Trong quá trình lấy dữ liệu bị lỗi. 
-//             callback(err);
-//         } else {
-//             //Trả về kết quả cho controller
-//             callback(null, users);
-//         }
-//     });
-// }
-
-// function getOneUser(id) {
-//     return new Promise(function (res, rej) {
-//         //Tìm một user có _id = id.
-//         User.findOne({
-//             _id: id
-//         }).exec(function (err, userData) {
-//             if (err) {
-//                 rej(err);
-//             } else {
-//                 if (!userData) {
-//                     rej({
-//                         statusCode: 400,
-//                         message: message.ERROR_MESSAGE.USER.NOT_FOUND
-//                     });
-//                 } else {
-//                     res(userData);
-//                 }
-//             }
-//         });
-//     });
-// }
-
+function getOneRestaurant(id) {
+    return new Promise(function (res, rej) {
+        //Tìm một user có _id = id.
+        Restaurant.findOne({
+            _id: id
+        }).exec(function (err, restaurantData) {
+            if (err) {
+                rej(err);
+            } else {
+                if (!restaurantData) {
+                    rej({
+                        statusCode: 400,
+                        message: message.ERROR_MESSAGE.USER.NOT_FOUND
+                    });
+                } else {
+                    res(restaurantData);
+                }
+            }
+        });
+    });
+}
 function createRestaurant(request) {
-
 return new Promise((res, rej) => {
     Restaurant.find({
-      name: request.names
+      name: request.name
     }).exec(function (err, RestaurantData) { // lam tiep
         if (err) {
             rej(err);
         } else {
-            if (userData.length>0) {
+            if (RestaurantData.length>0) {
                 rej({
                     statusCode: 404,
                     message: message.ERROR_MESSAGE.USER.EXIST
                 });
             } else {
-        let salt = crypto.genSalt();
-         var newUser = new User({
-        email: request.email,
-        name: request.name,
-        salt: salt,
-        password: crypto.hashWithSalt(request.password, salt),
-        role: request.role,
-        createdDate: new Date()
+       
+         var newRestaurant = new Restaurant({
+            name: request.name,
+            address: request.address,
+            lat: request.lat,
+            lng: request.lng
     });
-                newUser.save(function (err, response) {
+                newRestaurant.save(function (err, response) {
                     if (err) {
                         rej(err);
                     } else {
@@ -86,73 +86,70 @@ return new Promise((res, rej) => {
 });
 }
 
-// function updateUser(request) {
-//     return new Promise((res, rej) => {
-//         User.findOne({
-//             _id: request.id
-//         }).exec(function (err, userData) {
-//             if (err) {
-//                 rej(err);
-//             } else {
-//                 if (!userData) {
-//                     rej({
-//                         statusCode: 404,
-//                         message: message.ERROR_MESSAGE.USER.NOT_FOUND
-//                     });
-//                 } else {
-//                     //Có user để sửa. Và mình sẽ cập nhật nó.
-//                     //Thay đổi dữ liệu.
+function updateRestaurant(request) {
+    return new Promise((res, rej) => {
+        Restaurant.findOne({
+            _id: request.id
+        }).exec(function (err, restaurantData) {
+            if (err) {
+                rej(err);
+            } else {
+                if (!restaurantData) {
+                    rej({
+                        statusCode: 404,
+                        message: message.ERROR_MESSAGE.USER.NOT_FOUND
+                    });
+                } else {
+                    //Có restaurant để sửa. Và mình sẽ cập nhật nó.
+                    //Thay đổi dữ liệu.
 
-//                     userData.name = request.name || userData.name;
-//                     userData.role = request.role || userData.role;
+                    restaurantData.name = request.name ||  restaurantData.name;
+                    restaurantData.address = request.address ||  restaurantData.address;
+                    restaurantData.lat = request.lat ||  restaurantData.lat;
+                    restaurantData.lng = request.lng ||  restaurantData.lng;
 
-//                     //Thay đổi mật khẩu
-//                     if (request.password) {
-//                         userData.password = crypto.hashWithSalt(request.password, userData.salt);
-//                     }
+                    //Lưu trữ lại.
 
-//                     //Lưu trữ lại.
+                    restaurantData.save(function (err, response) {
+                        if (err) {
+                            rej(err);
+                        } else {
+                            res(response);
+                        }
+                    });
+                }
+            }
+        });
+    });
+}
 
-//                     userData.save(function (err, response) {
-//                         if (err) {
-//                             rej(err);
-//                         } else {
-//                             res(response);
-//                         }
-//                     });
-//                 }
-//             }
-//         });
-//     });
-// }
-
-// function deleteUser(id) {
-//     return new Promise((res, rej) => {
-//         User.findOne({
-//             _id: id
-//         }).exec(function (err, userData) {
-//             if (err) {
-//                 rej(err);
-//             } else {
-//                 if (!userData) {
-//                     rej({
-//                         statusCode: 404,
-//                         message: message.ERROR_MESSAGE.USER.NOT_FOUND
-//                     })
-//                 } else {
-//                     User.remove({
-//                         _id: id
-//                     }).exec(function (err, response) {
-//                         if (err) {
-//                             rej(err);
-//                         } else {
-//                             res({
-//                                 message: message.SUCCESS_MESSAGE.USER.DELETED
-//                             });
-//                         }
-//                     });
-//                 }
-//             }
-//         });
-//     });
-// }
+function deleteRestaurant(id) {
+    return new Promise((res, rej) => {
+        Restaurant.find({
+            _id: id
+        }).exec(function (err, restaurantData) {
+            if (err) {
+                rej(err);
+            } else {
+                if (!restaurantData) {
+                    rej({
+                        statusCode: 404,
+                        message: message.ERROR_MESSAGE.USER.NOT_FOUND
+                    })
+                } else {
+                    Restaurant.remove({
+                        _id: id
+                    }).exec(function (err, response) {
+                        if (err) {
+                            rej(err);
+                        } else {
+                            res({
+                                message: message.SUCCESS_MESSAGE.USER.DELETED
+                            });
+                        }
+                    });
+                }
+            }
+        });
+    });
+}
